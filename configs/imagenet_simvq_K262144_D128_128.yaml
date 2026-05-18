@@ -1,0 +1,95 @@
+seed_everything: 0
+trainer:
+  accelerator: gpu
+  strategy: ddp_find_unused_parameters_true
+  devices: 4
+  num_nodes: 1
+  precision: 16-mixed
+  max_epochs: 50
+  check_val_every_n_epoch: 1
+  num_sanity_val_steps: 0
+  log_every_n_steps: 100
+  accumulate_grad_batches: 1
+  callbacks:
+    - class_path: lightning.pytorch.callbacks.ModelCheckpoint
+      init_args:
+        dirpath: results/simvq_K262144_D128_128
+        save_top_k: -1
+        save_last: true
+    - class_path: lightning.pytorch.callbacks.LearningRateMonitor
+      init_args:
+        logging_interval: step
+  logger:
+    class_path: lightning.pytorch.loggers.WandbLogger
+    init_args:
+      save_dir: results/simvq_K262144_D128_128
+      project: DimVQ
+      name: simvq_K262144_D128_128
+
+ckpt_path: null
+model:
+  class_path: taming.models.vq.VQModel
+  init_args:
+    ddconfig:
+      double_z: false
+      z_channels: 128
+      resolution: 128
+      in_channels: 3
+      out_ch: 3
+      ch: 128
+      ch_mult:
+        - 1
+        - 2
+        - 2
+        - 4
+      num_res_blocks: 2
+      norm_type: groupnorm
+      norm_groups: 32
+    lossconfig:
+      target: taming.modules.losses.vqperceptual.VQLPIPSWithDiscriminator
+      params:
+        disc_conditional: false
+        disc_in_channels: 3
+        disc_start: 0
+        disc_weight: 0.8
+        gen_loss_weight: 0.1
+        codebook_weight: 0.1
+        commit_weight: 1.0
+    quantconfig:
+      target: taming.modules.vqvae.simvq.SimVQ
+      params:
+        n_e: 262144          # Codebook size K (262K)
+        e_dim: 128           # Embedding dimension D
+        beta: 0.25           # Commitment loss weight
+        embedding_init: gaussian
+        l2_norm: false
+        disentangle_loss_type: codebook_orth   # Codebook regularization (Eq. in paper)
+        disentangle_loss_weight: 0.001         # lambda = 1e-3 (optimal, see Table lambda)
+    learning_rate: 0.0001
+    warmup_epochs: 1.0
+    scheduler_type: None
+    use_ema: true
+
+data:
+  class_path: main.DataModuleFromConfig
+  init_args:
+    batch_size: 64
+    num_workers: 8
+    train:
+      target: taming.data.imagenet.ImageNetTrain
+      params:
+        config:
+          size: 128
+          subset: null
+    validation:
+      target: taming.data.imagenet.ImageNetValidation
+      params:
+        config:
+          size: 128
+          subset: null
+    test:
+      target: taming.data.imagenet.ImageNetValidation
+      params:
+        config:
+          size: 128
+          subset: null

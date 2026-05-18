@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# Model weights
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+checkpoints/
+
+# Experiment outputs
+results/
+wandb/
+vq_log/
+outputs/
+logs/
+lightning_logs/
+
+# Data
+data/
+*.tar
+*.tar.gz
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets
+.env
