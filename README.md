@@ -56,9 +56,8 @@ Available on [HuggingFace](https://huggingface.co/jackD/DimVQ):
 
 | Model | Resolution | K | D | rFID | LPIPS | PSNR | SSIM | Checkpoint |
 |-------|-----------|------|-----|------|-------|------|------|-----------|
-| SimVQ + Ours | 128x128 | 16,384 | 128 | - | - | - | - | [Download](https://huggingface.co/jackD/DimVQ) |
-| SimVQ + Ours | 128x128 | 65,536 | 128 | - | - | - | - | [Download](https://huggingface.co/jackD/DimVQ) |
-| SimVQ + Ours | 128x128 | 262,144 | 128 | 1.55 | 0.10 | 24.99 | 81.2 | [Download](https://huggingface.co/jackD/DimVQ) |
+| SimVQ + Ours | 128x128 | 65,536 | 128 | - | - | - | - | [Download](https://huggingface.co/jackD/DimVQ/tree/main/simvq_K65536) |
+| SimVQ + Ours | 128x128 | 262,144 | 128 | 1.55 | 0.10 | 24.99 | 81.2 | [Download](https://huggingface.co/jackD/DimVQ/tree/main/simvq_K262144) |
 
 ### TODO
 
